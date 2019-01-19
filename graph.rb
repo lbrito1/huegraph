@@ -1,21 +1,5 @@
 require 'byebug'
 
-# class AdjacencyList < Hash
-#   attr_reader :list
-
-#   def initialize
-#     @list = {}
-#   end
-
-#   def [](from)
-#     if list[from].nil?
-#        @list[from] = []
-#     else
-#       super(from)
-#     end
-#   end
-# end
-
 class Graph
   attr_accessor :edges
 
@@ -26,17 +10,24 @@ class Graph
   def add_edge(from:, to:, cost: 0)
     edges[from.id] ||= []
     edges[from.id] << Edge.new(from: from, to: to, cost: cost)
-    edges[to.id] ||= []
-    edges[to.id] << Edge.new(from: to, to: from, cost: cost) # TODO undirected
+    # edges[to.id] ||= []
+    # edges[to.id] << Edge.new(from: to, to: from, cost: cost) # TODO undirected
   end
+
+
 
   def breadth_first_search(start:)
     q = [start]
     start.mark
+    puts("Starting BFS on #{start}...")
     while(!q.empty?)
-      neighboring_edges = edges[q.pop.id]
+      v = q.pop
+      puts("  Visiting #{v}")
+      neighboring_edges = edges[v.id]
+      puts("    Edges of #{v}: #{neighboring_edges.map(&:to_s)}")
       neighboring_edges.each do |edge|
         neighbor = edge.to
+        puts("    Vertex #{neighbor}")
         next if neighbor.marked?
         q << neighbor
         neighbor.mark
@@ -48,6 +39,7 @@ end
 class Vertex
   attr_accessor :x, :y, :label, :marked
   alias :id :object_id
+  alias :to_s :label
 
   def marked?
     marked
@@ -68,6 +60,9 @@ class Edge
     @cost = cost
   end
 
+  def to_s
+    "Edge #{from} -> #{to} (costs #{cost})"
+  end
 end
 
 def testcase
