@@ -23,14 +23,17 @@ class Graph
     while(!q.empty?)
       v = q.pop
       puts("  Visiting #{v}")
-      neighboring_edges = edges[v.id]
-      puts("    Edges of #{v}: #{neighboring_edges.map(&:to_s)}")
-      neighboring_edges.each do |edge|
-        neighbor = edge.to
-        puts("    Vertex #{neighbor}")
-        next if neighbor.marked?
-        q << neighbor
-        neighbor.mark
+      neighbors = edges[v.id]&.map(&:to) || []
+      puts("    Neighbors of #{v}: #{neighbors.map(&:to_s)}")
+      neighbors.each do |neighbor|
+        print("    Vertex #{neighbor}... ")
+        if neighbor.marked?
+          print("is already marked. \n")
+        else
+          print("marked now. \n")
+          q << neighbor
+          neighbor.mark
+        end
       end
     end
   end
@@ -46,7 +49,6 @@ class Vertex
   end
 
   def mark
-    puts "Visited #{label}"
     @marked = true
   end
 end
