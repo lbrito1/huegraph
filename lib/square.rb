@@ -1,6 +1,9 @@
 require './lib/graph'
+require 'curses'
+require 'byebug'
 
 class Graph::Square < Graph
+  include Curses
   attr_accessor :vertices
 
   def initialize(n: 3)
@@ -25,14 +28,28 @@ class Graph::Square < Graph
     end
   end
 
-  def print_vertices(start: nil)
+  def print_vertices(start: nil, speed: 20)
+    # Curses::curs_set(0) #invisible cursor
     start ||= @vertices.first.first
-    breadth_first_search(start: start)
-    vertices.size.times do |i|
-      vertices.size.times do |j|
-        print(vertices[i][j].char(maxdist: maxdist))
+
+    maxdist = breadth_first_search(start: start)
+
+    @vertices.each { |arr| arr.each(&:reset) }
+
+    graph_text = StringIO.new
+    breadth_first_search(start: start) do |neighbor|
+      graph_text.rewind
+      vertices.size.times do |i|
+        vertices.size.times do |j|
+          graph_text.print(vertices[i][j].char(maxdist: maxdist))
+        end
+        graph_text.print("\n")
       end
-      puts
+
+      system('clear')
+      print(graph_text.string)
+      sleep (1/speed.to_f)
     end
   end
+  # Curses::curs_set(1) #visible cursor
 end

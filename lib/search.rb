@@ -3,7 +3,7 @@ require './lib/utils'
 module Search
   def breadth_first_search(start:)
     q = [start]
-    @maxdist = 0
+    maxdist = 0
     start.mark
     dbg("Starting BFS on #{start}...\n")
     while(!q.empty?)
@@ -13,15 +13,18 @@ module Search
       dbg("    Neighbors of #{v.to_s}: #{neighbors.map(&:to_s)}\n")
       neighbors.each do |neighbor|
         dbg("    Vertex #{neighbor.to_s}... ")
+        yield(vertex: neighbor) if block_given?
         if neighbor.marked?
           dbg("is already marked. \n")
         else
           dbg("marked now.\n")
           q << neighbor
           neighbor.mark(dist: v.dist + 1)
-          @maxdist = [v.dist + 1, @maxdist].max
+          maxdist = [v.dist + 1, maxdist].max
         end
       end
     end
+
+    maxdist
   end
 end

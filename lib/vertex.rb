@@ -19,4 +19,9 @@ class Vertex
     this_intensity = step * dist
     Rainbow('■').color(this_intensity, 23, 98)
   end
+
+  def reset
+    @marked = false
+    @dist = 0
+  end
 end
