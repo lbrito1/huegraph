@@ -3,11 +3,12 @@ require 'curses'
 require 'byebug'
 
 class Graph::Square < Graph
-  include Curses
   attr_accessor :vertices
 
   def initialize(n: 3)
     super()
+
+    Vertex.set_maxdist(n)
 
     @vertices = []
     n.times do |i|
@@ -28,28 +29,46 @@ class Graph::Square < Graph
     end
   end
 
-  def print_vertices(start: nil, speed: 20)
-    # Curses::curs_set(0) #invisible cursor
-    start ||= @vertices.first.first
+  def print_vertices(start: nil, speed: 100)
+    Curses::curs_set(0) #invisible cursor
+    Curses::init_screen
+    Curses::start_color
 
-    maxdist = breadth_first_search(start: start)
+    255.times.each { |i| Curses.init_pair(i,i, Curses::COLOR_BLACK) }
+
+    start ||= @vertices.first.first
 
     @vertices.each { |arr| arr.each(&:reset) }
 
-    graph_text = StringIO.new
+    # Record animation
+    print 'Loading'
+    slides = []
+    nvert = vertices.size
     breadth_first_search(start: start) do |neighbor|
-      graph_text.rewind
+      slides << nvert.times.map do |i|
+        nvert.times.map do |j|
+          [vertices[i][j].char, vertices[i][j].xterm_color]
+        end
+      end
+    end
+
+    # Play animation
+    slides.each do |vertices|
       vertices.size.times do |i|
         vertices.size.times do |j|
-          graph_text.print(vertices[i][j].char(maxdist: maxdist))
+          Curses::setpos(i,j)
+          char = vertices[i][j][0]
+          color = vertices[i][j][1]
+          Curses.attron(Curses::color_pair(color)|Curses::A_NORMAL) { Curses::addstr(char) }
         end
-        graph_text.print("\n")
       end
+      Curses::refresh
 
-      system('clear')
-      print(graph_text.string)
-      sleep (1/speed.to_f)
+      sleep(1/speed.to_f)
     end
+
+    Curses::curs_set(1) #visible cursor
+  ensure
+    Curses::close_screen
   end
-  # Curses::curs_set(1) #visible cursor
 end

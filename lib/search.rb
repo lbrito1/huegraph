@@ -13,7 +13,6 @@ module Search
       dbg("    Neighbors of #{v.to_s}: #{neighbors.map(&:to_s)}\n")
       neighbors.each do |neighbor|
         dbg("    Vertex #{neighbor.to_s}... ")
-        yield(vertex: neighbor) if block_given?
         if neighbor.marked?
           dbg("is already marked. \n")
         else
@@ -21,6 +20,7 @@ module Search
           q << neighbor
           neighbor.mark(dist: v.dist + 1)
           maxdist = [v.dist + 1, maxdist].max
+          yield(vertex: neighbor) if block_given?
         end
       end
     end
