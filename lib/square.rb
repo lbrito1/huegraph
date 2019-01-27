@@ -8,7 +8,7 @@ class Graph::Square < Graph
   def initialize(n: 3)
     super()
 
-    Vertex.set_maxdist(n)
+    Vertex.set_maxdist(n*1.2)
 
     @vertices = []
     n.times do |i|
@@ -29,7 +29,7 @@ class Graph::Square < Graph
     end
   end
 
-  def print_vertices(start: nil, speed: 100)
+  def print_vertices(start: nil, speed: 500)
     Curses::curs_set(0) #invisible cursor
     Curses::init_screen
     Curses::start_color
@@ -70,6 +70,8 @@ class Graph::Square < Graph
       sleep(1/speed.to_f)
       Curses::refresh
     end
+
+    sleep(3)
 
     Curses::curs_set(1) #visible cursor
   ensure

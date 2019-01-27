@@ -24,8 +24,11 @@ class Vertex
 
   def xterm_color
     step = 255/@@maxdist.to_f
-    this_intensity = step * dist
-    rgb_to_xterm(this_intensity, 20, 150)
+    intensity = (step * dist)
+    r = intensity > 128 ? 128 - intensity : 4*intensity
+    g = intensity > 128 ? 4*intensity - 128 : 0
+    b = intensity > 128 ? 0 : 4*intensity
+    rgb_to_xterm(r, g, b)
   end
 
   def reset
