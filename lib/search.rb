@@ -20,7 +20,7 @@ module Search
           q << neighbor
           neighbor.mark(dist: v.dist + 1)
           maxdist = [v.dist + 1, maxdist].max
-          yield(vertex: neighbor) if block_given?
+          yield(neighbor) if block_given?
         end
       end
     end

@@ -1,7 +1,7 @@
 require 'rainbow'
 
 class Vertex
-  attr_accessor :id, :label, :marked, :dist
+  attr_accessor :id, :label, :marked, :dist, :i, :j
   alias :to_s :label
   alias :id :object_id
 

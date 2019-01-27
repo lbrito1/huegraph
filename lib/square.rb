@@ -14,7 +14,7 @@ class Graph::Square < Graph
     n.times do |i|
       @vertices[i] = []
       n.times do |j|
-        @vertices[i] << Vertex.new.tap { |v| v.label = "#{i},#{j}" }
+        @vertices[i] << Vertex.new.tap { |v| v.label = "#{i},#{j}", v.i = i, v.j = j }
       end
     end
     n.times do |i|
@@ -42,29 +42,33 @@ class Graph::Square < Graph
 
     # Record animation
     print 'Loading'
+    first = nil
     slides = []
     nvert = vertices.size
-    breadth_first_search(start: start) do |neighbor|
-      slides << nvert.times.map do |i|
+    breadth_first_search(start: start) do |visited|
+      first ||= nvert.times.map do |i|
         nvert.times.map do |j|
           [vertices[i][j].char, vertices[i][j].xterm_color]
         end
       end
+      slides << [visited.i, visited.j, visited.char, visited.xterm_color]
     end
 
     # Play animation
-    slides.each do |vertices|
-      vertices.size.times do |i|
-        vertices.size.times do |j|
-          Curses::setpos(i,j)
-          char = vertices[i][j][0]
-          color = vertices[i][j][1]
-          Curses.attron(Curses::color_pair(color)|Curses::A_NORMAL) { Curses::addstr(char) }
-        end
+    nvert.times do |i|
+      nvert.times do |j|
+        Curses::setpos(i,j)
+        char = first[i][j][0]
+        color = first[i][j][1]
+        Curses.attron(Curses::color_pair(color)|Curses::A_NORMAL) { Curses::addstr(char) }
       end
-      Curses::refresh
-
+    end
+    slides.each do |vertex|
+      i, j, char, color = vertex
+      Curses::setpos(i, j)
+      Curses.attron(Curses::color_pair(color)|Curses::A_NORMAL) { Curses::addstr(char) }
       sleep(1/speed.to_f)
+      Curses::refresh
     end
 
     Curses::curs_set(1) #visible cursor
