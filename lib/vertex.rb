@@ -1,4 +1,4 @@
-require 'rainbow'
+require 'chroma'
 
 class Vertex
   attr_accessor :id, :label, :marked, :dist, :i, :j
@@ -25,10 +25,8 @@ class Vertex
   def xterm_color
     step = 255/@@maxdist.to_f
     intensity = (step * dist)
-    r = intensity > 128 ? 128 - intensity : 4*intensity
-    g = intensity > 128 ? 4*intensity - 128 : 0
-    b = intensity > 128 ? 0 : 4*intensity
-    rgb_to_xterm(r, g, b)
+    rgb = Chroma.paint("hsl(#{intensity}, 100%, 50%)").rgb
+    rgb_to_xterm(rgb.r, rgb.g, rgb.b)
   end
 
   def reset
