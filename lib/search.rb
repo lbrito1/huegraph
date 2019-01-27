@@ -9,18 +9,19 @@ module Search
     while(!q.empty?)
       v = q.delete_at(0)
       dbg("  Visiting #{v.to_s}, vdist=#{v.dist}\n")
-      neighbors = neighbors(vertex: v)
+      neighbors = edges[v.id] || []
       dbg("    Neighbors of #{v.to_s}: #{neighbors.map(&:to_s)}\n")
-      neighbors.each do |neighbor|
-        dbg("    Vertex #{neighbor.to_s}... ")
-        if neighbor.marked?
+      neighbors.each do |edge|
+        v_neighbor = edge.to
+        dbg("    Vertex #{v_neighbor.to_s}... ")
+        if v_neighbor.marked?
           dbg("is already marked. \n")
         else
           dbg("marked now.\n")
-          q << neighbor
-          neighbor.mark(dist: v.dist + 1)
-          maxdist = [v.dist + 1, maxdist].max
-          yield(neighbor) if block_given?
+          q << v_neighbor
+          v_neighbor.mark(dist: v.dist + edge.cost)
+          maxdist = [v.dist + edge.cost, maxdist].max
+          yield(v_neighbor) if block_given?
         end
       end
     end

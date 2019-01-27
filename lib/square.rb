@@ -3,10 +3,12 @@ require 'curses'
 require 'byebug'
 
 class Graph::Square < Graph
-  attr_accessor :vertices
+  attr_accessor :vertices, :side
 
   def initialize(n: 3)
     super()
+
+    @side = n
 
     Vertex.set_maxdist(n*1.2)
 
@@ -26,6 +28,12 @@ class Graph::Square < Graph
           add_edge(from: vertices[i][j], to: vertices[i+1][j])
         end
       end
+    end
+  end
+
+  def add_barrier(i, j)
+    5.times do |offset|
+      edges[vertices[i + offset][j].id] = []
     end
   end
 
