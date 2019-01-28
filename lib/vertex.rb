@@ -25,8 +25,13 @@ class Vertex
   def xterm_color
     step = 255/@@maxdist.to_f
     intensity = (step * dist)
-    rgb = Chroma.paint("hsl(#{intensity}, 100%, 50%)").rgb
-    rgb_to_xterm(rgb.r, rgb.g, rgb.b)
+    if dist == 0
+      rgb_to_xterm(50,50,50)
+    else
+      col = Chroma.paint("hsl(#{intensity}, 100%, 65%)")
+      rgb = col.rgb
+      rgb_to_xterm(rgb.r, rgb.g, rgb.b)
+    end
   end
 
   def reset

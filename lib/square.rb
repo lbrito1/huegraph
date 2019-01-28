@@ -1,6 +1,5 @@
 require './lib/graph'
 require 'curses'
-require 'byebug'
 
 class Graph::Square < Graph
   attr_accessor :vertices, :side
@@ -9,8 +8,6 @@ class Graph::Square < Graph
     super()
 
     @side = n
-
-    Vertex.set_maxdist(n*1.2)
 
     @vertices = []
     n.times do |i|
@@ -31,25 +28,38 @@ class Graph::Square < Graph
     end
   end
 
-  def add_barrier(i, j)
-    5.times do |offset|
-      edges[vertices[i + offset][j].id] = []
+  def add_hori_barrier(i:, j:, size:)
+    3.times do |offset_v|
+      size.times do |offset_h|
+        edges[vertices[i + offset_v][j + offset_h].id] = []
+      end
     end
   end
 
-  def print_vertices(start: nil, speed: 500)
+  def add_vert_barrier(i:, j:, size:)
+    3.times do |offset_h|
+      size.times do |offset_v|
+        edges[vertices[i + offset_v][j + offset_h].id] = []
+      end
+    end
+  end
+
+  def print_vertices(start: nil, speed: 300)
     Curses::curs_set(0) #invisible cursor
     Curses::init_screen
     Curses::start_color
+
+    print 'Loading...'
 
     255.times.each { |i| Curses.init_pair(i,i, Curses::COLOR_BLACK) }
 
     start ||= @vertices.first.first
 
+    # Get maxdist (needed for coloring)
+    Vertex.set_maxdist(breadth_first_search(start: start))
     @vertices.each { |arr| arr.each(&:reset) }
 
     # Record animation
-    print 'Loading'
     first = nil
     slides = []
     nvert = vertices.size
