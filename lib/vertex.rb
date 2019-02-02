@@ -9,6 +9,10 @@ class Vertex
     @@maxdist = maxdist
   end
 
+  def self.set_hue(hue)
+    @@hue = hue
+  end
+
   def marked?
     marked
   end
@@ -22,9 +26,11 @@ class Vertex
     dist.to_s.chars.last
   end
 
+  # TODO refactor
   def xterm_color
-    step = 255/@@maxdist.to_f
-    intensity = (step * dist)
+    color_width = 100 # TODO extract
+    step = color_width/@@maxdist.to_f
+    intensity = ((step * dist) + @@hue) % 255
     if dist == 0
       rgb_to_xterm(50,50,50)
     else
@@ -39,6 +45,7 @@ class Vertex
     @dist = 0
   end
 
+  # TODO refactor - got from https://codegolf.stackexchange.com/questions/156918/rgb-to-xterm-color-converter
   def rgb_to_xterm(r,g,b)
     ->c{
       d=0,95,135,175,215,255                 # d is the set of possible RGB values
