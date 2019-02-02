@@ -1,6 +1,6 @@
-require './lib/vertex'
-require './lib/edge'
-require './lib/search'
+require 'vertex'
+require 'edge'
+require 'search'
 
 class Graph
   include Search

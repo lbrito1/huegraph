@@ -1,4 +1,4 @@
-require './lib/utils'
+require 'utils'
 
 module Search
   def breadth_first_search(start:)

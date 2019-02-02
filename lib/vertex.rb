@@ -1,4 +1,4 @@
-require './lib/colorizeable'
+require 'colorizeable'
 
 class Vertex
   include Colorizeable

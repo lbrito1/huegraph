@@ -1,4 +1,4 @@
-require './lib/graph'
+require 'graph'
 require 'curses'
 
 class Graph::Square < Graph
