@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-
-require './lib/square'
 g = Graph::Square.new(n: 20)
 
 g.add_hori_barrier(i: 2, j: 0, size: 18)

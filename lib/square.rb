@@ -56,7 +56,7 @@ class Graph::Square < Graph
     start ||= @vertices.first.first
 
     # Get maxdist (needed for coloring)
-    Vertex.set_maxdist(breadth_first_search(start: start))
+    Vertex.max_dist = breadth_first_search(start: start)
     @vertices.each { |arr| arr.each(&:reset) }
 
     # Record animation

@@ -1,3 +1,15 @@
 #!/usr/bin/env ruby
 
+require './lib/square'
+
+# TODO include speed, color_width
+if (position = ARGV[0] =~ /hue=/)
+  hue_start = position + 'hue='.length
+  if (hue = ARGV[0][hue_start..-1].to_i) > 0
+    Vertex.hue = hue
+    Vertex.color_width = 100
+  end
+end
+
+# TODO maybe load a text-based graph
 require './hello_graph'
